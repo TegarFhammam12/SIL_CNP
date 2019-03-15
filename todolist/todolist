@@ -1,0 +1,153 @@
+1st week done!
+2nd week (Search, Pagination, Session login)!
+3rd week Soon!
+
+//pengenalan git
+
+if($this->session->userdata('level')!="superadmin" || $this->session->userdata('level')!="superadmin" !="admin"){
+redirect('c_login/index');
+}
+}
+
+$gambar = $_FILES['gambar']['name'];
+  if($gambar=''){}
+    else{
+      $config['upload_path']='./assets/images/upload';
+      $config['allowed_types']='jpg|gif|png';
+      $this->load->library('upload',$config);
+      if(!$this->upload->do_upload('gambar')){
+        echo "Upload gagal!"; die();
+      }else{
+        $gambar=$this->upload->data('file_name');
+      }
+      $data=array('$dt_gambar'=>$gambar);
+      $this->My_model->insert($data,'tb_telephony');
+      redirect('c_TelephonyAdd/index');
+    }
+
+
+
+
+$this->session->set_userdata('nip', $row->dt_nip);
+$this->session->set_userdata('nama', $row->dt_nama);
+$this->session->set_userdata('email', $row->dt_email);
+$this->session->set_userdata('username', $row->dt_username);
+$this->session->set_userdata('password', $row->dt_password);
+$this->session->set_userdata('no_telp', $row->dt_no_telp);
+$this->session->set_userdata('level', $row->level);
+
+
+
+$config['upload_path']='./assets/image/upload';
+$config['allowed_types']='jpg|png|gif|jpeg|bmp';
+$this->load->library('upload',$config);
+
+  if(!$this->upload->do_upload("gambar"))
+  {
+    echo $this->upload->display_errors();exit();
+    echo"<script> alert('Upload gagal!');window.location.href='".base_url('c_TelephonyAdd')."'</script>";
+    exit();
+  }
+  $file = $this->upload->data();
+  $data['dt_gambar'] = $file['file_name'];
+$this->load->model('m_TelephonyAdd');
+$this->m_TelephonyAdd->insert($data);
+}
+redirect('c_dashboard');
+}
+
+///////////
+
+$gambar = $_FILES['gambar']['name'];
+  if($gambar=''){}
+    else{
+      $config['upload_path']='./assets/image/upload';
+      $config['allowed_types']='jpg|png|gif|jpeg|bmp';
+      $this->load->library('upload',$config);
+      if(!$this->upload->do_upload('gambar')){
+        echo $this->upload->display_errors();
+        exit();
+        echo"<script> alert('Upload gagal!');window.location.href='".base_url('c_TelephonyAdd')."'</script>";
+        exit();
+      }else{
+        $gambar=$this->upload->data('file_name');
+      }
+      $data=array('$dt_gambar'=>$gambar);
+      $this->m_TelephonyAdd->insert($data,'tb_telephony');
+      redirect('c_telephony/index');
+    }
+
+////////////////
+
+$this->load->library('pagination');
+$this->load->model('m_editdata');
+$config = array();
+$config['base_url'] = base_url().'c_telephony/index';
+$config['total_rows'] = $this->m_editdata->count_tb_telephony();
+$config['per_page'] = 5;
+
+$this->pagination->initialize($config);
+$data['tb_telephony'] = $this->m_editdata->fetch_telephony($config['per_page'], $this->uri->segment(3));
+
+/////////////////
+
+$this->load->library('pagination');
+$this->load->model('m_editdata');
+$limit = 5;
+$config['base_url'] = base_url('index.php/c_telephony/index');
+$config['total_rows'] = $this->m_editdata->count_tb_telephony();
+$config['per_page'] = $limit;
+
+$this->pagination->initialize($config);
+
+$data['paging'] = $this->pagination->create_links();
+$data['tb_telephony'] = $this->m_editdata->fetch_telephony($limit, $offset);
+
+/////////
+
+
+$config['full_tag_open'] ="<ul class='pagination pagination-sm' style='position:relative;top:-25px'>";
+$config['full_tag_close'] ="</ul>";
+$config['num_tag_open'] = "<li>";
+$config['num_tag_close'] = "</li>";
+$config['cur_tag_open'] = "<li class='disabled><li class='active'><a href='#'>";
+$config['cur_tag_close'] = "<span class='sr-only'></span></a></li>";
+$config['next_tag_open'] = "<li>";
+$config['next_tag_close'] = "</li>";
+$config['prev_tag_open'] = "<li>";
+$config['prev_tag_close'] = "</li>";
+$config['first_tag_open'] = "<li>";
+$config['first_tag_close'] = "</li>";
+$config['last_tag_open'] = "<li>";
+$config['last_tag_close'] = "</li>";
+
+
+////////////////////
+
+
+$data_telephon = $this->db->get("tb_telephony");
+$config['total_rows'] = $data_telephon->num_rows();
+$cofig['base_url'] = base_url().()'index.php/c_telephony/index';
+$config['per_page'] = 5;
+
+$config['full_tag_open'] ="<ul class='pagination pagination-sm' style='position:relative;top:-25px'>";
+$config['full_tag_close'] ="</ul>";
+$config['num_tag_open'] = "<li>";
+$config['num_tag_close'] = "</li>";
+$config['cur_tag_open'] = "<li class='disabled><li class='active'><a href='#'>";
+$config['cur_tag_close'] = "<span class='sr-only'></span></a></li>";
+$config['next_tag_open'] = "<li>";
+$config['next_tag_close'] = "</li>";
+$config['prev_tag_open'] = "<li>";
+$config['prev_tag_close'] = "</li>";
+$config['first_tag_open'] = "<li>";
+$config['first_tag_close'] = "</li>";
+$config['last_tag_open'] = "<li>";
+$config['last_tag_close'] = "</li>";
+
+$this->pagination->initialize($config);
+
+$data['halaman'] = $this->pagination->create_links();
+$data['offset'] = $offset;
+$this->load->model('m_editdata');
+$data['data']=$this->m_editdata->get_data($config['per_page'],$offset);
